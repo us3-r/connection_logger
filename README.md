@@ -11,37 +11,43 @@ To run this program you need to have:<br />
 ## Installation
 1. In terminal move to the directory in which you have put your main.py and req.txt;
 2. Use PIP to install required librarys:
-> ```bash 
->pip install -r req.txt
->```
+```bash 
+pip install -r req.txt
+```
+
+## How to use
 
 When the required librarys are installed you are ready to start the program :)
 1. In terminal move to directiory where you have your main.py;
 2. To start the program, in terminal write:
->```bash
->python main.py
->```
+```bash
+python main.py -f -d -t -u -r
+```
 or
+```bash
+python3 main.py -f -d -t -u -r
+```
+
+>## What to put in arguments
+>At this moment you must enter a value for every line argumen
 >```bash
->python3 main.py
+>-f [file name] e.g.: test, conn_log
 >```
-3. Now all the instructions you will need shuld be shown in your terminal
+>```bash
+>-d [file directory] e.g.: C:\user\...
+>```
+>```bash
+>-t [timezone] (see yours in pytz_timezone_list.py) e.g.: Europe/Ljubljana
+>```
+>```bash
+>-u [url of the site] e.g.: https://www.google.com/
+>```
+>```bash
+>-r [time when program will try to reconnect to site] e.g.: 10
+>```
+
 
 ## PYTZ
 [List for all available timezones for pytz library](https://github.com/us3-r/connection_logger/blob/main/pytz_timezone_list.py)
 
-### Edit variubles
-You can edit the following variubles:
-```python
-time_zone=pytz.timezone('') #<= put correct value for your time zone (see pytz_timezone_list.py to see correct values)
-```
-```python
-url='https://blank.page/' #<= can change the url to any you want
-```
-```python
-# amount of time it will wait before trying to connect to the site
-refresh=10 #<= can change to any number ( refresh > 1) [in seconds]
-```
 
-### To come 
-~ Line arguments
