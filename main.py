@@ -1,15 +1,12 @@
 from multiprocessing import connection
-import os.path
 from os import path
-from socket import timeout
-import sys
 from datetime import datetime,date
-from unittest.mock import patch
 from numpy import full
 import requests
 from time import sleep
 import time as time
 import pytz
+
 
 # put your time zone for the corrcet time 
 time_zone=pytz.timezone('')
