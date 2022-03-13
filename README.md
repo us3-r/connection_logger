@@ -29,3 +29,16 @@ or
 
 ## PYTZ
 [List for all available timezones for pytz library](https://github.com/us3-r/connection_logger/blob/main/pytz_timezone_list.py)
+
+### Edit variubles
+You can edit the following variubles:
+```python
+time_zone=pytz.timezone('') #<= put correct value for your time zone (see pytz_timezone_list.py to see correct values)
+```
+```python
+url='https://blank.page/' #<= can change the url to any you want
+```
+```python
+# amount of time it will wait before trying to connect to the site
+refresh=10 #<= can change to any number ( refresh > 1) [in seconds]
+```
