@@ -42,3 +42,6 @@ url='https://blank.page/' #<= can change the url to any you want
 # amount of time it will wait before trying to connect to the site
 refresh=10 #<= can change to any number ( refresh > 1) [in seconds]
 ```
+
+### To come 
+~ Line arguments
