@@ -1,70 +1,127 @@
+
 from multiprocessing import connection
 from os import path
+import os
 from datetime import datetime,date
+import re
+from timeit import repeat
 from numpy import full
 import requests
 from time import sleep
-import time as time
+import time
 import pytz
+import argparse
 
+tzlist=[]
+for time_ in pytz.all_timezones:
+    tzlist.append(time_)
 
-# put your time zone for the corrcet time 
-time_zone=pytz.timezone('')
+parser=argparse.ArgumentParser(description="commands")
 
+parser.add_argument('-f', help="Name of your file",type=str,default="conn_log")
+
+parser.add_argument('-d',help="Name of your files directory",type=str, default=os.getcwd())
+
+parser.add_argument('-t',help="your timezone",type=str,default='Europe/Ljubljana')
+
+parser.add_argument('-u',help="url to desired website",type=str,default='https://blank.page/')
+
+parser.add_argument('-r',help="time after which program will try to reconnect to the site",type=int)
+
+args=parser.parse_args()
+################### EXERTIONS FOR ARG VALUES ###################
+print("\n")
+#set file name
+file_name1=args.f
+
+#set file directory
+file_path=""
+fp=args.d
+if fp=="0":
+    #get current working directori
+    file_path=os.getcwd()
+else:
+    file_path=fp 
+
+#set time zone
+if args.t!=" ":
+    timezon=args.t
+    if timezon in tzlist:
+        tz=timezon
+    else:
+        tz='Europe/Ljubljana'
+        print(f'[!] Entered timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} [!]')
+else:
+    tz='Europe/Ljubljana'
+
+#set url
 url='https://blank.page/'
+if args.u!=" ":
+    try:
+        url_=args.u
+        request=requests.get(url_,timeout=10)
+        url=args.u
+    except requests.exceptions.RequestException as ex:
+        print(f'[!] There was an error with given url \"{args.u}\" new url is \"{url}\" [!]')
+        url=url
+
+#set repeat
+new_r=args.r
+if new_r<10:
+    print(f'[!] For safety reasons this number should be bigger than 10 > so I set it to 10 :) [!]\n')
+    rep=10
+else:
+    rep=args.r
+################################################################
+
+tz=tz
+rep=float(rep)
+time_zone=pytz.timezone(tz)
 timeout=300
 
-#change this variable to change trying speed (in seconds)
-#eg: so every "refresh" seconds the program will try to connect to the internett
-refresh=10
-
-file_name1=input("[$] >  Write a name for a file where you want your data: ")
-file_path=input("[$] >  \n[$] >  List the directory where you want this file to be located (e.g: C/.../.../...) \n[$] >  OR\n[$] >  If the program is in the directory where you want your .txt file to be enter \"0\"\n[$] >  ")
+###  create file name and file path  ###
 file_name=str(file_name1)
 file_name=file_name1+".txt"
 full_path=str(file_path+"/"+file_name)
 
-if file_path=="0":
-    file_=open(file_name,"a")
-else:
-    if path.exists(full_path):
-        ans=input(f'[$] > \n[$] >  A file with the name \"{file_name}\" already exists in given directory{file_path}\n[$] >  Below write:\n[$] >  \"n\" if you would like to rename your file\n[$] >   or\n[$] >  \"c\" to add a number to the end of your file name\n[$] >  ')
-        if ans=="n":
-            file_name=input("[$] >  Write a new name for a file: ")
-            file_name=str(file_name)
-            file_name=file_name+".txt"
-            full_path=str(file_path+"/"+file_name)
-            file_=open(full_path,"a")
-        elif ans=="c":
-            file_name=file_name1+"1"+".txt"
-            full_path=str(file_path+"/"+file_name)
-            file_=open(full_path,"a")
-    else:
-        file_=open(full_path,"a")
+###  open .txt file  ###
+file_=open(full_path,"a")
 
+### print all values  ###
+print(f'| File name: {file_name}\n| File directory: {full_path}\n| Timezone: {tz}\n| Url: {url}\n| Repeat: {rep}\n')
 
+### get and set start time and date  ###
 now=datetime.now(time_zone)
 date_now=datetime.now()
 date_now=now.strftime("%d. %m. %y")
 current_time = now.strftime("%H:%M:%S")
-print(f'[$] >  \n[$] >       PROGRAM HAS STARTED feel free to minimalism the window and go one with your day      \n[$] >  When you wish to see the data in your txt file come back to this window and press \"crl+c\" \n[$] >  ')
-file_.write(f'[$] >  Program started on {date_now} at {current_time} \n')
+
+###  program start   ###
+print(f'[$] > ############################################################################################# \n[$] > #      PROGRAM HAS STARTED feel free to minimalize the window and go one with your day      #\n[$] > # When you wish to see the data in your txt file come back to this window and press \"crl+c\" #\n[$] > ############################################################################################# ')
+
+###   write to file time and date of when program started  ###
+file_.write(f'[$] > #Program started on {date_now} at {current_time} #\n')
 
 
 while True:
+    ###  get current time and date  ###
     now=datetime.now(time_zone)
     date_now=datetime.now()
     date_now=now.strftime("%d. %m. %y")
     current_time = now.strftime("%H:%M:%S")
     print("-----------------------")
-    print(f'[log ●] Current Time = {current_time} | Current Date = {date_now}')
+    print(f'[log] Current Time = {current_time} | Current Date = {date_now}')
+    ###  try astablish connection with the site  ###
     try:
         request=requests.get(url=url,timeout=5)
-        print("[log ●] connection succesfull")
+        print("[log] connection successful")
 
+    ###  if you cant connect because of connection error  ###
     except(requests.ConnectionError, requests.Timeout) as exeption:
+        ###  get current time and date  ###
         a=datetime.now()
+        ###  write to file when the connection couldnt be made  ###
         file_.write(f'[!] Unable to connect [connection error] at {current_time}        | {date_now} | [!]\n')
-        print("[log ●] unable to connect")
+        print("[log] unable to connect")
     print("-----------------------")
-    time.sleep(refresh)
+    time.sleep(rep)
