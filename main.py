@@ -17,6 +17,10 @@ time_zone=pytz.timezone('')
 url='https://blank.page/'
 timeout=300
 
+#change this variable to change trying speed (in seconds)
+#eg: so every "refresh" seconds the program will try to connect to the internett
+refresh=10
+
 file_name1=input("[$] >  Write a name for a file where you want your data: ")
 file_path=input("[$] >  \n[$] >  List the directory where you want this file to be located (e.g: C/.../.../...) \n[$] >  OR\n[$] >  If the program is in the directory where you want your .txt file to be enter \"0\"\n[$] >  ")
 file_name=str(file_name1)
@@ -66,4 +70,4 @@ while True:
         file_.write(f'[!] Unable to connect [connection error] at {current_time}        | {date_now} | [!]\n')
         print("[log ●] unable to connect")
     print("-----------------------")
-    time.sleep(10)
+    time.sleep(refresh)
