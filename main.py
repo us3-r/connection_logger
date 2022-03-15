@@ -7,7 +7,6 @@ from datetime import datetime,date
 import re
 from timeit import repeat
 from turtle import color
-from wsgiref.simple_server import demo_app
 from numpy import full
 import requests
 from time import sleep
@@ -16,6 +15,7 @@ import pytz
 import argparse
 from clr import colors
 
+os.system("") #so colors work on windows
 timeout=300
 
 tzlist=[]
