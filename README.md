@@ -55,4 +55,5 @@ python3 main.py
 [List for all available timezones for pytz library](https://github.com/us3-r/connection_logger/blob/main/pytz_timezone_list.py)
 
 ## ISSUES
-[!] currently might not work on Windows since color functions have only been tested on Linux
+no issues for current build
+> [!] currently might not work on Windows since color functions have only been tested on Linux [ FIXED ]
