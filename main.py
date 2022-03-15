@@ -1,10 +1,12 @@
 
+from calendar import c
 from multiprocessing import connection
 from os import path
 import os
 from datetime import datetime,date
 import re
 from timeit import repeat
+from wsgiref.simple_server import demo_app
 from numpy import full
 import requests
 from time import sleep
@@ -12,72 +14,77 @@ import time
 import pytz
 import argparse
 
+timeout=300
+
 tzlist=[]
 for time_ in pytz.all_timezones:
     tzlist.append(time_)
 
 parser=argparse.ArgumentParser(description="commands")
 
-parser.add_argument('-f', help="Name of your file",type=str,default="conn_log")
+parser.add_argument('-f', help="Name of your file",type=str,default="conn_log",)
 
-parser.add_argument('-d',help="Name of your files directory",type=str, default=os.getcwd())
+parser.add_argument('-d',help="Name of your files directory",type=str,default=os.getcwd())
 
 parser.add_argument('-t',help="your timezone",type=str,default='Europe/Ljubljana')
 
 parser.add_argument('-u',help="url to desired website",type=str,default='https://blank.page/')
 
-parser.add_argument('-r',help="time after which program will try to reconnect to the site",type=int)
+parser.add_argument('-r',help="time after which program will try to reconnect to the site",type=int, default=10)
 
 args=parser.parse_args()
-################### EXERTIONS FOR ARG VALUES ###################
+################### EXEPTIONS FOR ARG VALUES ###################
 print("\n")
-#set file name
+### set file name
 file_name1=args.f
 
-#set file directory
+### set file directory
 file_path=""
 fp=args.d
-if fp=="0":
-    #get current working directori
-    file_path=os.getcwd()
-else:
-    file_path=fp 
+file_path=fp
 
-#set time zone
+### set time zone
 if args.t!=" ":
     timezon=args.t
     if timezon in tzlist:
         tz=timezon
     else:
         tz='Europe/Ljubljana'
-        print(f'[!] Entered timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} [!]')
+        print(f'[!] Enterd timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} [!]')
 else:
     tz='Europe/Ljubljana'
 
-#set url
+### url test
+### sets deafult value for url
 url='https://blank.page/'
-if args.u!=" ":
+
+### trys if the given url is working
+if args.u!=url:
+    url_=args.u
     try:
-        url_=args.u
         request=requests.get(url_,timeout=10)
         url=args.u
+    ### if the given url is not working it sets the url to default url
     except requests.exceptions.RequestException as ex:
         print(f'[!] There was an error with given url \"{args.u}\" new url is \"{url}\" [!]')
-        url=url
+        url=url   
+else:
+    url=url
 
-#set repeat
+### set repeat
 new_r=args.r
 if new_r<10:
-    print(f'[!] For safety reasons this number should be bigger than 10 > so I set it to 10 :) [!]\n')
+    print(f'[!] For safety reasons this number shuld be bigger than 10 > so I set it to 10 :) [!]\n')
     rep=10
 else:
     rep=args.r
+
 ################################################################
 
 tz=tz
 rep=float(rep)
 time_zone=pytz.timezone(tz)
-timeout=300
+
 
 ###  create file name and file path  ###
 file_name=str(file_name1)
@@ -88,7 +95,7 @@ full_path=str(file_path+"/"+file_name)
 file_=open(full_path,"a")
 
 ### print all values  ###
-print(f'| File name: {file_name}\n| File directory: {full_path}\n| Timezone: {tz}\n| Url: {url}\n| Repeat: {rep}\n')
+print(f'\n| File name: {file_name}\n| File directory: {full_path}\n| Timezone: {tz}\n| Url: {url}\n| Repeat: {rep}\n')
 
 ### get and set start time and date  ###
 now=datetime.now(time_zone)
@@ -114,8 +121,8 @@ while True:
     ###  try astablish connection with the site  ###
     try:
         request=requests.get(url=url,timeout=5)
-        print("[log] connection successful")
-
+        print("[log] connection succesfull")
+    
     ###  if you cant connect because of connection error  ###
     except(requests.ConnectionError, requests.Timeout) as exeption:
         ###  get current time and date  ###
