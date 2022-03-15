@@ -6,6 +6,7 @@ import os
 from datetime import datetime,date
 import re
 from timeit import repeat
+from turtle import color
 from wsgiref.simple_server import demo_app
 from numpy import full
 import requests
@@ -13,6 +14,7 @@ from time import sleep
 import time
 import pytz
 import argparse
+from clr import colors
 
 timeout=300
 
@@ -50,7 +52,7 @@ if args.t!=" ":
         tz=timezon
     else:
         tz='Europe/Ljubljana'
-        print(f'[!] Enterd timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} [!]')
+        print(f'{colors.Lyellow}[!] Enterd timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} ')
 else:
     tz='Europe/Ljubljana'
 
@@ -66,7 +68,7 @@ if args.u!=url:
         url=args.u
     ### if the given url is not working it sets the url to default url
     except requests.exceptions.RequestException as ex:
-        print(f'[!] There was an error with given url \"{args.u}\" new url is \"{url}\" [!]')
+        print(f'{colors.Lyellow}[!] There was an error with given url \"{args.u}\" new url is \"{url}\" ')
         url=url   
 else:
     url=url
@@ -74,7 +76,7 @@ else:
 ### set repeat
 new_r=args.r
 if new_r<10:
-    print(f'[!] For safety reasons this number shuld be bigger than 10 > so I set it to 10 :) [!]\n')
+    print(f'{colors.Lyellow}[!] For safety reasons this number shuld be bigger than 10 > so I set it to 10 :) \n')
     rep=10
 else:
     rep=args.r
@@ -95,7 +97,7 @@ full_path=str(file_path+"/"+file_name)
 file_=open(full_path,"a")
 
 ### print all values  ###
-print(f'\n| File name: {file_name}\n| File directory: {full_path}\n| Timezone: {tz}\n| Url: {url}\n| Repeat: {rep}\n')
+print(f'\n{colors.Lgreen}| File name: {file_name}\n| File directory: {full_path}\n| Timezone: {tz}\n| Url: {url}\n| Repeat: {rep}\n')
 
 ### get and set start time and date  ###
 now=datetime.now(time_zone)
@@ -104,7 +106,7 @@ date_now=now.strftime("%d. %m. %y")
 current_time = now.strftime("%H:%M:%S")
 
 ###  program start   ###
-print(f'[$] > ############################################################################################# \n[$] > #      PROGRAM HAS STARTED feel free to minimalize the window and go one with your day      #\n[$] > # When you wish to see the data in your txt file come back to this window and press \"crl+c\" #\n[$] > ############################################################################################# ')
+print(f'{colors.blue} ############################################################################################# \n #      PROGRAM HAS STARTED feel free to minimalize the window and go one with your day      #\n # When you wish to see the data in your txt file come back to this window and press \"crl+c\" #\n ############################################################################################# ')
 
 ###   write to file time and date of when program started  ###
 file_.write(f'[$] > #Program started on {date_now} at {current_time} #\n')
@@ -116,19 +118,22 @@ while True:
     date_now=datetime.now()
     date_now=now.strftime("%d. %m. %y")
     current_time = now.strftime("%H:%M:%S")
-    print("-----------------------")
-    print(f'[log] Current Time = {current_time} | Current Date = {date_now}')
+
     ###  try astablish connection with the site  ###
     try:
         request=requests.get(url=url,timeout=5)
-        print("[log] connection succesfull")
+        print(f"{colors.Dgray}-----------------------")
+        print(f'{colors.Dgray}[log] Current Time = {current_time} | Current Date = {date_now}')
+        print(f"{colors.Dgray}[log] connection succesfull")
     
     ###  if you cant connect because of connection error  ###
     except(requests.ConnectionError, requests.Timeout) as exeption:
         ###  get current time and date  ###
         a=datetime.now()
         ###  write to file when the connection couldnt be made  ###
+        print(f"{colors.red}-----------------------")
         file_.write(f'[!] Unable to connect [connection error] at {current_time}        | {date_now} | [!]\n')
-        print("[log] unable to connect")
-    print("-----------------------")
+        print(f'{colors.red}[log] Current Time = {current_time} | Current Date = {date_now}')
+        print(f"{colors.red}[log] unable to connect")
+    
     time.sleep(rep)
