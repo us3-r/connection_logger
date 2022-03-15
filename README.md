@@ -29,7 +29,7 @@ python3 main.py -f -d -t -u -r
 ```
 
 >## What to put in arguments
->At this moment you must enter a value for every line argumen
+>***arguments are optional; if you do not input your values than the deafult values will be used***
 >```bash
 >-f [file name] e.g.: test, conn_log
 >```
