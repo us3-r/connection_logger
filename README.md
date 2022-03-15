@@ -27,6 +27,10 @@ or
 ```bash
 python3 main.py -f -d -t -u -r
 ```
+or (in this case deafult values will be used)
+```bash
+python3 main.py
+```
 
 >## What to put in arguments
 >***arguments are optional; if you do not input your values than the deafult values will be used***
