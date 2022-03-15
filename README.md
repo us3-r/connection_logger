@@ -50,4 +50,5 @@ python3 main.py -f -d -t -u -r
 ## PYTZ
 [List for all available timezones for pytz library](https://github.com/us3-r/connection_logger/blob/main/pytz_timezone_list.py)
 
-
+## ISSUES
+[!] currently might not work on Windows since color functions have only been teste on Linux
