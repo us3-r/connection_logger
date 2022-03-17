@@ -7,6 +7,7 @@ from datetime import datetime,date
 import re
 from timeit import repeat
 from turtle import color
+from wsgiref.simple_server import demo_app
 from numpy import full
 import requests
 from time import sleep
@@ -15,7 +16,7 @@ import pytz
 import argparse
 from clr import colors
 
-os.system("") #so colors work on windows
+os.system("")
 timeout=300
 
 tzlist=[]
@@ -37,7 +38,14 @@ parser.add_argument('-r',help="time after which program will try to reconnect to
 args=parser.parse_args()
 ################### EXEPTIONS FOR ARG VALUES ###################
 print("\n")
+
+print(f"{colors.blue}▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀▀▀▀▀▀▀▀▀▀▀▀\n")
+print("█▀▀ █▀█ █▄ █ █▄ █ █▀▀ █▀▀ ▀█▀ █ █▀█ █▄ █\n█▄▄ █▄█ █ ▀█ █ ▀█ ██▄ █▄▄  █  █ █▄█ █ ▀█\n")
+print("█   █▀█ █▀▀ █▀▀ █▀▀ █▀█\n█▄▄ █▄█ █▄█ █▄█ ██▄ █▀▄\n")
+print("▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀▀▀▀▀▀▀▀▀▀▀▀")
+
 ### set file name
+
 file_name1=args.f
 
 ### set file directory
@@ -45,6 +53,11 @@ file_path=""
 fp=args.d
 file_path=fp
 
+state1="OK"
+state2="OK"
+state3="OK"
+state4="OK"
+state5="OK"
 ### set time zone
 if args.t!=" ":
     timezon=args.t
@@ -53,8 +66,10 @@ if args.t!=" ":
     else:
         tz='Europe/Ljubljana'
         print(f'{colors.Lyellow}[!] Enterd timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} ')
+        state3="W"
 else:
     tz='Europe/Ljubljana'
+    state3="W"
 
 ### url test
 ### sets deafult value for url
@@ -69,15 +84,18 @@ if args.u!=url:
     ### if the given url is not working it sets the url to default url
     except requests.exceptions.RequestException as ex:
         print(f'{colors.Lyellow}[!] There was an error with given url \"{args.u}\" new url is \"{url}\" ')
-        url=url   
+        url=url
+        state4="W"
 else:
     url=url
+    state4="W"
 
 ### set repeat
 new_r=args.r
 if new_r<10:
     print(f'{colors.Lyellow}[!] For safety reasons this number shuld be bigger than 10 > so I set it to 10 :) \n')
     rep=10
+    state5="W"
 else:
     rep=args.r
 
@@ -97,7 +115,28 @@ full_path=str(file_path+"/"+file_name)
 file_=open(full_path,"a")
 
 ### print all values  ###
-print(f'\n{colors.Lgreen}| File name: {file_name}\n| File directory: {full_path}\n| Timezone: {tz}\n| Url: {url}\n| Repeat: {rep}\n')
+print("\n")
+if state1=="OK":
+    print(f'{colors.green}[{state1}] File name: {file_name}')
+else:
+    print(f'{colors.Lyellow}[{state1}] File name: {file_name}')
+if state2=="OK":
+    print(f'{colors.green}[{state2}] File directory: {full_path}')
+else:
+    print(f'{colors.Lyellow}[{state2}] File directory: {full_path}')
+if state3=="OK":
+    print(f'{colors.green}[{state3}] Timezone: {tz}')
+else:
+    print(f'{colors.Lyellow}[{state3}] Timezone: {tz} | {colors.green}(OK)')
+if state4=="OK":
+    print(f'{colors.green}[{state4}] Url: {url} ')
+else:
+    print(f'{colors.Lyellow}[{state4}] Url: {url} | {colors.green}(OK)')
+if state5=="OK":
+    print(f'{colors.green}[{state5}] Repeat: {rep}\n')
+else:
+    print(f'{colors.Lyellow}[{state5}] Repeat: {rep} | {colors.green}(OK)\n')
+
 
 ### get and set start time and date  ###
 now=datetime.now(time_zone)
