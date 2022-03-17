@@ -7,7 +7,6 @@ from datetime import datetime,date
 import re
 from timeit import repeat
 from turtle import color
-from wsgiref.simple_server import demo_app
 from numpy import full
 import requests
 from time import sleep
