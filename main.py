@@ -1,18 +1,10 @@
-
 from calendar import c
-from multiprocessing import connection
-from os import path
 import os
-from datetime import datetime,date
-import re
-from timeit import repeat
-from turtle import color
-from numpy import full
-import requests
-from time import sleep
-import time
+from datetime import datetime
 import pytz
 import argparse
+import requests
+import time
 from clr import colors
 
 os.system("")
@@ -24,7 +16,7 @@ for time_ in pytz.all_timezones:
 
 parser=argparse.ArgumentParser(description="commands")
 
-parser.add_argument('-f', help="Name of your file",type=str,default="conn_log",)
+parser.add_argument('-f', help="Name of your file",type=str,default="conn_log")
 
 parser.add_argument('-d',help="Name of your files directory",type=str,default=os.getcwd())
 
@@ -57,18 +49,19 @@ state2="OK"
 state3="OK"
 state4="OK"
 state5="OK"
+
 ### set time zone
 if args.t!=" ":
     timezon=args.t
     if timezon in tzlist:
         tz=timezon
     else:
-        tz='Europe/Ljubljana'
+        tz='Europe/Zurich'
         print(f'{colors.Lyellow}[!] Enterd timezone \"{timezon}\" is not in supported timezones; timezone is set to {tz} ')
-        state3="W"
+        state3="!!"
 else:
-    tz='Europe/Ljubljana'
-    state3="W"
+    tz='Europe/Zurich'
+    state3="!!"
 
 ### url test
 ### sets deafult value for url
@@ -83,18 +76,18 @@ if args.u!=url:
     ### if the given url is not working it sets the url to default url
     except requests.exceptions.RequestException as ex:
         print(f'{colors.Lyellow}[!] There was an error with given url \"{args.u}\" new url is \"{url}\" ')
-        url=url
-        state4="W"
+        urlInUse=url
+        state4="!!"
 else:
-    url=url
-    state4="W"
+    urlInUse=url
+    state4="!!"
 
 ### set repeat
 new_r=args.r
 if new_r<10:
     print(f'{colors.Lyellow}[!] For safety reasons this number shuld be bigger than 10 > so I set it to 10 :) \n')
     rep=10
-    state5="W"
+    state5="!!"
 else:
     rep=args.r
 
@@ -115,26 +108,12 @@ file_=open(full_path,"a")
 
 ### print all values  ###
 print("\n")
-if state1=="OK":
-    print(f'{colors.green}[{state1}] File name: {file_name}')
-else:
-    print(f'{colors.Lyellow}[{state1}] File name: {file_name}')
-if state2=="OK":
-    print(f'{colors.green}[{state2}] File directory: {full_path}')
-else:
-    print(f'{colors.Lyellow}[{state2}] File directory: {full_path}')
-if state3=="OK":
-    print(f'{colors.green}[{state3}] Timezone: {tz}')
-else:
-    print(f'{colors.Lyellow}[{state3}] Timezone: {tz} | {colors.green}(OK)')
-if state4=="OK":
-    print(f'{colors.green}[{state4}] Url: {url} ')
-else:
-    print(f'{colors.Lyellow}[{state4}] Url: {url} | {colors.green}(OK)')
-if state5=="OK":
-    print(f'{colors.green}[{state5}] Repeat: {rep}\n')
-else:
-    print(f'{colors.Lyellow}[{state5}] Repeat: {rep} | {colors.green}(OK)\n')
+print(f'{colors.yellow}[{state1}] File name: {file_name}')
+print(f'[{state2}] File directory: {full_path}')
+print(f'[{state3}] Timezone: {tz}')
+print(f'[{state4}] Url: {url} ')
+print(f'[{state5}] Repeat: {rep}{colors.rst}    \n')
+
 
 
 ### get and set start time and date  ###
@@ -157,9 +136,9 @@ while True:
     date_now=now.strftime("%d. %m. %y")
     current_time = now.strftime("%H:%M:%S")
 
-    ###  try astablish connection with the site  ###
+    ###  try establish connection with the site  ###
     try:
-        request=requests.get(url=url,timeout=5)
+        request=requests.get(url=urlInUse,timeout=5)
         print(f"{colors.Dgray}-----------------------")
         print(f'{colors.Dgray}[log] Current Time = {current_time} | Current Date = {date_now}')
         print(f"{colors.Dgray}[log] connection succesfull")
@@ -168,7 +147,7 @@ while True:
     except(requests.ConnectionError, requests.Timeout) as exeption:
         ###  get current time and date  ###
         a=datetime.now()
-        ###  write to file when the connection couldnt be made  ###
+        ###  write to file when the connection couldn't be made  ###
         print(f"{colors.red}-----------------------")
         file_.write(f'[!] Unable to connect [connection error] at {current_time}        | {date_now} | [!]\n')
         print(f'{colors.red}[log] Current Time = {current_time} | Current Date = {date_now}')
